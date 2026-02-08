@@ -14,30 +14,17 @@ variable "creds_profile" {
   default     = "default"
 }
 
-variable "snet1_cidr_block" {
-  type        = string
-  description = "Subnet 1 CIDR block"
-  default     = "10.0.0.0/24"
+variable "snet_cidr_blocks" {
+  type        = list(string)
+  description = "Subnet CIDR blocks"
+  default     = ["10.0.0.0/24", "10.0.1.0/24"]
 }
 
-variable "snet1_availability_zone" {
-  type        = string
-  description = "Subnet 1 CIDR block"
-  default     = "eu-central-1a"
+variable "snet_availability_zones" {
+  type        = list(string)
+  description = "Subnet Availability Zones"
+  default     = ["eu-central-1a", "eu-central-1b"]
 }
-
-variable "snet2_cidr_block" {
-  type        = string
-  description = "Subnet 2 CIDR block"
-  default     = "10.0.1.0/24"
-}
-
-variable "snet2_availability_zone" {
-  type        = string
-  description = "Subnet 2 CIDR block"
-  default     = "eu-central-1b"
-}
-
 variable "cluster_name" {
   type        = string
   description = "EKS Cluster Name"

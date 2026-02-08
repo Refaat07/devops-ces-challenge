@@ -5,5 +5,5 @@ output "vpc_id" {
   value = aws_vpc.main.id
 }
 output "subnet_ids" {
-  value = [aws_subnet.snet1.id, aws_subnet.snet2.id]
+  value = [for snet in aws_subnet.snets : snet.id]
 }
