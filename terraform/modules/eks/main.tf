@@ -1,15 +1,16 @@
 # EKS Cluster
 resource "aws_eks_cluster" "eks_cluster" {
   name = var.cluster_name
-
+  bootstrap_self_managed_addons = false
   access_config {
     authentication_mode = var.authentication_mode
   }
 
   role_arn = aws_iam_role.cluster_role.arn
-  version  = "1.31"
-
+  version  = var.cluster_version
   vpc_config {
+    endpoint_private_access = var.endpoint_private_access
+    endpoint_public_access  = var.endpoint_public_access
     subnet_ids = var.subnet_ids
   }
 
@@ -27,6 +28,8 @@ resource "aws_eks_node_group" "eks_node_group" {
   node_group_name = "${var.cluster_name}-node-group"
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
   subnet_ids      = var.subnet_ids
+  instance_types = ["t3.small"]
+  ami_type = "BOTTLEROCKET_x86_64_FIPS"
 
   scaling_config {
     desired_size = 2

@@ -8,6 +8,7 @@ module "vpc" {
 module "eks" {
   source               = "./modules/eks"
   cluster_name         = var.cluster_name
+  cluster_version      = var.cluster_version
   cluster_role_name    = var.cluster_role_name
   node_group_role_name = var.node_group_role_name
   authentication_mode  = var.cluster_authentication_mode

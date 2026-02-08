@@ -27,7 +27,7 @@ variable "snet_availability_zones" {
 }
 variable "cluster_name" {
   type        = string
-  description = "EKS Cluster Name"
+  description = "EKS Cluster name"
   default     = "dv-eks"
 }
 
@@ -35,6 +35,12 @@ variable "cluster_authentication_mode" {
   type        = string
   description = "EKS Cluster Authentication Mode"
   default     = "API_AND_CONFIG_MAP"
+}
+
+variable "cluster_version" {
+  type        = string
+  description = "EKS Cluster version"
+  default     = "1.31"
 }
 
 variable "cluster_role_name" {
@@ -47,4 +53,16 @@ variable "node_group_role_name" {
   type        = string
   description = "EKS Role Name"
   default     = "dv-eks-node-group-role"
+}
+
+variable "endpoint_public_access" {
+  type        = bool
+  description = "Public access to the EKS cluster endpoint"
+  default     = false
+}
+
+variable "endpoint_private_access" {
+  type        = bool
+  description = "Private access to the EKS cluster endpoint"
+  default     = true
 }
