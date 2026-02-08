@@ -5,9 +5,9 @@ resource "aws_vpc" "main" {
 
 # Subnets for use with EKS
 resource "aws_subnet" "snets" {
-  for_each = toset(var.snet_cidr_blocks)
+  for_each = zipmap(var.snet_cidr_blocks, var.snet_availability_zones) #construced map of cidr blocks and availability zones as keys and values.
   vpc_id            = aws_vpc.main.id
-  cidr_block        = each.value
-availability_zone = var.snet_availability_zones[index(var.snet_cidr_blocks, each.value)]
+  cidr_block        = each.key
+  availability_zone = each.value
 }
 
