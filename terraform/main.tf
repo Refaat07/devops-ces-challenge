@@ -1,7 +1,7 @@
 module "vpc" {
   source                  = "./modules/vpc"
   vpc_cidr_block          = var.vpc_cidr_block
-  snet_cidr_blocks      = var.snet_cidr_blocks
+  snet_cidr_blocks        = var.snet_cidr_blocks
   snet_availability_zones = var.snet_availability_zones
 }
 
