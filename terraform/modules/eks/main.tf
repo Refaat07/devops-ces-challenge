@@ -27,9 +27,9 @@ resource "aws_eks_node_group" "eks_node_group" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = "${var.cluster_name}-node-group"
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
-  subnet_ids      = var.subnet_ids
+  subnet_ids      = [var.subnet_ids[1]] # Use private subnet for node group
   instance_types = ["t3.small"]
-  ami_type = "BOTTLEROCKET_x86_64_FIPS"
+  ami_type = "BOTTLEROCKET_x86_64"
 
   scaling_config {
     desired_size = 2
