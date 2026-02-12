@@ -4,14 +4,32 @@ variable "vpc_cidr_block" {
   default = "10.0.0.0/23"
 }
 
-variable "snet_cidr_blocks" {
-  type        = list(string)
-  description = "Subnet CIDR blocks"
-  default     = ["10.0.0.0/24", "10.0.1.0/24"]
+variable "public_snet_cidr_block" {
+  type        = string
+  description = "Public Subnet CIDR block"
+  default     = "10.0.0.0/24"
 }
 
-variable "snet_availability_zones" {
-  type        = list(string)
-  description = "Subnet Availability Zones"
-  default     = ["eu-central-1a", "eu-central-1b"]
+variable "public_snet_availability_zone" {
+  type        = string
+  description = "Public Subnet Availability Zone"
+  default     = "eu-central-1a"
+}
+
+variable "private_snet_cidr_block" {
+  type        = string
+  description = "Private Subnet CIDR block"
+  default     = "10.0.1.0/24"
+}
+
+variable "private_snet_availability_zone" {
+  type        = string
+  description = "Private Subnet Availability Zone"
+  default     = "eu-central-1b"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "Private Subnet Availability Zone"
+  default     = "dv-eks"
 }
