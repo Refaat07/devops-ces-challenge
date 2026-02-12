@@ -14,7 +14,7 @@ terraform {
 # Configure the AWS Provider
 provider "aws" {
   region  = var.region
-  profile = var.creds_profile
+  profile = "default"
 }
 
 provider "kubernetes" {
