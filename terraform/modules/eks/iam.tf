@@ -44,6 +44,52 @@ resource "aws_iam_role" "eks_node_group_role" {
 
 # Attach the AmazonEKSWorkerNodePolicy to the EKS Node Group IAM Role
 resource "aws_iam_role_policy_attachment" "eks_worker_node_policy_attachment" {
+  for_each = toset(["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+                "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+                "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"])
   role       = aws_iam_role.eks_node_group_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  policy_arn = each.value
 }
+# resource "aws_iam_role_policy_attachment" "eks_cni_Policy" {
+# policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+# role       = aws_iam_role.eks_node_group_role.name 
+# }
+
+# resource "aws_iam_role_policy_attachment" "ecr_read_only_policy" {
+# policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+# role       = aws_iam_role.eks_node_group_role.name 
+# }
+
+# Create a managed policy with additional permissions for the EKS Node Group IAM Role
+resource "aws_iam_policy" "eks_node_additional_permissions" {
+  name        = "${var.node_group_role_name}-additional-permissions"
+  description = "Additional permissions for EKS node group"
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:CreateNetworkInterface",
+          "ec2:AttachNetworkInterface",
+          "ec2:DetachNetworkInterface",
+          "ec2:DeleteNetworkInterface",
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Attach the additional permissions policy to the EKS Node Group IAM Role
+resource "aws_iam_role_policy_attachment" "eks_node_additional_permissions_attachment" {
+  role       = aws_iam_role.eks_node_group_role.name
+  policy_arn = aws_iam_policy.eks_node_additional_permissions.arn
+}
+

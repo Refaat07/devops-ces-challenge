@@ -1,6 +1,8 @@
 # Main VPC
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr_block
+  enable_dns_hostnames = true
+  enable_dns_support = true
 }
 
 # Subnets for use with EKS
@@ -16,6 +18,10 @@ resource "aws_subnet" "private_snet"{
   vpc_id = aws_vpc.main.id
   cidr_block = var.private_snet_cidr_block
   availability_zone = var.private_snet_availability_zone
+   tags = {
+    Name = "${var.cluster_name}-node-group",
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+  }
 }
 
 # Internet Gateway

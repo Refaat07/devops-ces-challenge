@@ -1,9 +1,10 @@
 # EKS Cluster
 resource "aws_eks_cluster" "eks_cluster" {
   name = var.cluster_name
-  bootstrap_self_managed_addons = false
+  bootstrap_self_managed_addons = true
   access_config {
     authentication_mode = var.authentication_mode
+    bootstrap_cluster_creator_admin_permissions = true
   }
 
   role_arn = aws_iam_role.cluster_role.arn
@@ -29,7 +30,7 @@ resource "aws_eks_node_group" "eks_node_group" {
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
   subnet_ids      = [var.subnet_ids[1]] # Use private subnet for node group
   instance_types = ["t3.small"]
-  ami_type = "BOTTLEROCKET_x86_64"
+  # ami_type = "BOTTLEROCKET_x86_64"
 
   scaling_config {
     desired_size = 2
@@ -43,5 +44,9 @@ resource "aws_eks_node_group" "eks_node_group" {
     aws_iam_role_policy_attachment.eks_worker_node_policy_attachment,
     aws_eks_cluster.eks_cluster,
   ]
+  tags = {
+    Name = "${var.cluster_name}-node-group",
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+  }
   
 }
