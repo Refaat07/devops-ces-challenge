@@ -10,8 +10,10 @@ resource "aws_subnet" "public_snet"{
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.public_snet_cidr_block
   availability_zone = var.public_snet_availability_zone
-  
   map_public_ip_on_launch = true
+  tags = {
+    "kubernetes.io/role/elb" = 1
+  }
 }
 
 resource "aws_subnet" "private_snet"{
