@@ -33,3 +33,8 @@ variable "cluster_name" {
   description = "Private Subnet Availability Zone"
   default     = "dv-eks"
 }
+variable "alb_name" {
+  type = string
+  description = "Name of the Application Load Balancer"
+  default = "eks-alb"
+}

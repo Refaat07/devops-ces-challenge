@@ -13,6 +13,8 @@ resource "aws_subnet" "public_snet"{
   map_public_ip_on_launch = true
   tags = {
     "kubernetes.io/role/elb" = 1
+    Name = "${var.cluster_name}-node-group",
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
 
@@ -22,7 +24,8 @@ resource "aws_subnet" "private_snet"{
   availability_zone = var.private_snet_availability_zone
    tags = {
     Name = "${var.cluster_name}-node-group",
-    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned",
+    "kubernetes.io/role/internal-elb" = 1
   }
 }
 

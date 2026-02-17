@@ -19,3 +19,7 @@ output "private_snet_arn" {
 output "private_snet_id" {
   value = aws_subnet.private_snet.id
 }
+
+output "alb_sg_id" {
+  value = aws_security_group.alb_sg.id
+}

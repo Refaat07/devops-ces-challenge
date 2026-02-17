@@ -21,6 +21,9 @@ resource "aws_eks_cluster" "eks_cluster" {
   depends_on = [
     aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy,
   ]
+  tags = {
+    "alpha.eksctl.io/cluster-oidc-enabled" = "true"
+  }
 }
 
 # EKS Node Group
@@ -30,7 +33,6 @@ resource "aws_eks_node_group" "eks_node_group" {
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
   subnet_ids      = [var.subnet_ids[1]] # Use private subnet for node group
   instance_types = ["t3.small"]
-  # ami_type = "BOTTLEROCKET_x86_64"
 
   scaling_config {
     desired_size = 2
