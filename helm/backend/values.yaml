@@ -1,0 +1,19 @@
+appVersion: v.01
+labels:
+  app: backend
+  tier: backend
+ingress:
+  host: mrefaat.me
+  subnets:
+    - subnet-042ac08e42683d001
+    - subnet-09a76ba376529ea9d
+image:
+  repository: mrefaat07/datavysin-backend
+  tag: v.04
+  pullPolicy: IfNotPresent
+service:
+  name: backend-svc
+  type: NodePort
+  port: 30000
+  targetPort: 8080
+  nodePort: 30102
