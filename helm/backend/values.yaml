@@ -1,4 +1,4 @@
-appVersion: v.01
+appVersion: v.04
 labels:
   app: backend
   tier: backend
@@ -9,7 +9,7 @@ ingress:
     - subnet-09a76ba376529ea9d
 image:
   repository: mrefaat07/datavysin-backend
-  tag: v.04
+  tag: v.05
   pullPolicy: IfNotPresent
 service:
   name: backend-svc
