@@ -37,3 +37,9 @@ variable "client_id" {
   description = "OAuth2 Client ID"
   sensitive   = true
 }
+
+variable "domain_name" {
+  type        = string
+  description = "Domain name for the application"
+  default = "dvtask.mrefaat.me"
+}

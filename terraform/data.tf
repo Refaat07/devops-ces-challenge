@@ -8,6 +8,6 @@ data "aws_secretsmanager_secret_version" "client_secret" {
 }
 
 data "aws_acm_certificate" "alb_cert" {
-  domain   = module.eks.alb_dns_name
+  domain   = var.domain_name
   statuses = ["ISSUED"]
 }
