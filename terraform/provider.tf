@@ -8,6 +8,10 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.0"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.0"
+    }
   }
 }
 
@@ -19,5 +23,10 @@ provider "aws" {
 
 provider "kubernetes" {
   config_path    = "~/.kube/config"
-  config_context = "dv-eks"
+}
+
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+    }
 }

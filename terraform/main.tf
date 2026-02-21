@@ -31,4 +31,16 @@ module "eks" {
   client_secret           = data.aws_secretsmanager_secret_version.client_secret.secret_string
 }
 
+module "helm_charts" {
+  source = "./modules/helm"
+  subnet_ids = [module.vpc.public_snet_id, module.vpc.private_snet_id]
+  vpc_id = module.vpc.vpc_id
+  alb_name = "argocd-alb"
+  alb_sg_id = module.vpc.alb_sg_id
+  autoscaling_group_name = module.eks.autoscaling_group_name
+  certificate_arn = data.aws_acm_certificate.argocd_cert.arn
+  client_id = var.argocd_client_id
+  client_secret = data.aws_secretsmanager_secret_version.argocd_client_secret.secret_string
+  depends_on = [ module.eks ]
+}
 # TODO: Add Secrets through Terraform for Cluster secrets if needed.

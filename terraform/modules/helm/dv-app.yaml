@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: datavisyn-backend # Name of the Argo CD application
+  namespace: argocd # Namespace where Argo CD is installed
+spec:
+  project: default # The Argo CD project the application belongs to
+  source:
+    repoURL: 'https://github.com/Refaat07/devops-ces-challenge' # URL of the Git repository
+    targetRevision: HEAD # The branch, tag, or commit to sync from (e.g., 'HEAD' or 'main')
+    path: "helm/backend" # The path within the repository to the K8s manifests
+  destination:
+    server: https://kubernetes.default.svc # The Kubernetes cluster API server URL
+    namespace: default # The target namespace to deploy the manifests to
+  syncPolicy:
+    automated: # Automated sync policy
+      prune: true # Allows resources to be deleted
+      selfHeal: true # Automatically syncs when the live state drifts from the desired state

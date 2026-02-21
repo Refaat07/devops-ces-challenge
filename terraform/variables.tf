@@ -37,9 +37,19 @@ variable "client_id" {
   description = "OAuth2 Client ID"
   sensitive   = true
 }
-
+variable "argocd_client_id" {
+  type        = string
+  description = "OAuth2 Client ID for ArgoCD"
+  sensitive   = true
+}
 variable "domain_name" {
   type        = string
   description = "Domain name for the application"
   default = "dvtask.mrefaat.me"
+}
+
+variable "argocd_domain_name" {
+  type        = string
+  description = "Domain name for the ArgoCD application"
+  default = "argocd.mrefaat.me"
 }
