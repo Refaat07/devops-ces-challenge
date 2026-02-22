@@ -16,3 +16,13 @@ output "autoscaling_group_name" {
   value = aws_eks_node_group.eks_node_group.resources[0].autoscaling_groups[0].name
   description = "Autoscaling Group name"
 }
+
+output "cluster_endpoint" {
+  value = aws_eks_cluster.eks_cluster.endpoint
+  description = "Cluster Endpoint for authentication"
+}
+
+output "cluster_ca_certificate" {
+  value = aws_eks_cluster.eks_cluster.certificate_authority
+  description = "Cluster CA Certificate for authentication"
+}

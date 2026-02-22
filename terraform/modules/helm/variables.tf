@@ -43,3 +43,8 @@ variable "client_secret" {
   description = "OAuth2 Client Secret"
   sensitive = true
 }
+
+variable "argocd_domain_name" {
+  type = string
+  description = "ArgoCD Domain Name"
+}

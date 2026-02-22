@@ -41,5 +41,6 @@ module "helm_charts" {
   certificate_arn        = data.aws_acm_certificate.argocd_cert.arn
   client_id              = var.argocd_client_id
   client_secret          = data.aws_secretsmanager_secret_version.argocd_client_secret.secret_string
+  argocd_domain_name     = var.argocd_domain_name
   depends_on             = [module.eks]
 }

@@ -9,12 +9,6 @@ variable "region" {
   default     = "eu-central-1"
 }
 
-variable "s3_bucket_name" {
-  type        = string
-  description = "Name of the S3 bucket for Terraform state"
-  default     = "dv-s3-mrefaat"
-}
-
 variable "oauth2_issuer_url" {
   type        = string
   description = "OAuth2 Issuer URL"

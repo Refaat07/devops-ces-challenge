@@ -13,6 +13,7 @@ resource "helm_release" "argocd" {
     templatefile("${path.module}/values.yaml", {
     client_id = var.client_id
     client_secret = var.client_secret
+    argocd_domain_name = var.argocd_domain_name
     })
   ]
 }

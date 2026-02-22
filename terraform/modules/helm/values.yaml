@@ -42,7 +42,7 @@ crds:
 global:
   # -- Default domain used by all components
   ## Used for ingresses, certificates, SSO, notifications, etc.
-  domain: https://argocd.mrefaat.me
+  domain: https://${argocd_domain_name}
 
   # -- Runtime class name for all components
   runtimeClassName: ""
@@ -189,7 +189,7 @@ configs:
   cm:
     # -- Create the argocd-cm configmap for [declarative setup]
     create: true
-    url: https://argocd.mrefaat.me
+    url: https://${argocd_domain_name}
     # -- Annotations to be added to argocd-cm configmap
     annotations: {}
 
