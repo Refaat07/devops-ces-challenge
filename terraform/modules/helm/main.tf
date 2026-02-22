@@ -8,11 +8,7 @@ resource "helm_release" "argocd" {
   cleanup_on_fail  = true
   version          = "9.4.3" # Specify a consistent version
   create_namespace = true
-  # You can set other values here, e.g., for LoadBalancer exposure
-#   set {
-#     name  = "server.service.type"
-#     value = "LoadBalancer"
-#   }
+
   values = [
     templatefile("${path.module}/values.yaml", {
     client_id = var.client_id

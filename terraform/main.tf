@@ -21,7 +21,7 @@ module "eks" {
   vpc_id                  = module.vpc.vpc_id
   subnet_ids              = [module.vpc.public_snet_id, module.vpc.private_snet_id]
   certificate_arn         = data.aws_acm_certificate.alb_cert.arn
-  endpoint_public_access  = true #TODO: If time allows, set to false and configure access via bastion host or VPN
+  endpoint_public_access  = true
   endpoint_private_access = true
   client_id               = var.client_id
   oauth2_issuer_url       = var.oauth2_issuer_url
@@ -32,15 +32,14 @@ module "eks" {
 }
 
 module "helm_charts" {
-  source = "./modules/helm"
-  subnet_ids = [module.vpc.public_snet_id, module.vpc.private_snet_id]
-  vpc_id = module.vpc.vpc_id
-  alb_name = "argocd-alb"
-  alb_sg_id = module.vpc.alb_sg_id
+  source                 = "./modules/helm"
+  subnet_ids             = [module.vpc.public_snet_id, module.vpc.private_snet_id]
+  vpc_id                 = module.vpc.vpc_id
+  alb_name               = "argocd-alb"
+  alb_sg_id              = module.vpc.alb_sg_id # Same SG for EKS ALB
   autoscaling_group_name = module.eks.autoscaling_group_name
-  certificate_arn = data.aws_acm_certificate.argocd_cert.arn
-  client_id = var.argocd_client_id
-  client_secret = data.aws_secretsmanager_secret_version.argocd_client_secret.secret_string
-  depends_on = [ module.eks ]
+  certificate_arn        = data.aws_acm_certificate.argocd_cert.arn
+  client_id              = var.argocd_client_id
+  client_secret          = data.aws_secretsmanager_secret_version.argocd_client_secret.secret_string
+  depends_on             = [module.eks]
 }
-# TODO: Add Secrets through Terraform for Cluster secrets if needed.

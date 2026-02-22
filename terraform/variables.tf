@@ -1,10 +1,10 @@
 variable "env_name" {
-  type = string
+  type        = string
   description = "Resouce name prefix for the environment"
   default     = "dv"
 }
 variable "region" {
-  type = string
+  type        = string
   description = "Default Region for AWS resources"
   default     = "eu-central-1"
 }
@@ -45,11 +45,11 @@ variable "argocd_client_id" {
 variable "domain_name" {
   type        = string
   description = "Domain name for the application"
-  default = "dvtask.mrefaat.me"
+  default     = "dvtask.mrefaat.me"
 }
 
 variable "argocd_domain_name" {
   type        = string
   description = "Domain name for the ArgoCD application"
-  default = "argocd.mrefaat.me"
+  default     = "argocd.mrefaat.me"
 }
