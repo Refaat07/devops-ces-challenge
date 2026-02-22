@@ -243,3 +243,8 @@ aws secretsmanager put-secret-value \
     --secret-id MyCustomSecret \
     --secret-string <NEW_SECRET_STRING>
 ```
+
+# PoC
+The application is currently accessible for the duration of the hiring process.
+application: https://dvtask.mrefaat.me
+ArgoCD server: https://argocd.mrefaat.me
