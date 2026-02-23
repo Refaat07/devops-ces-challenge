@@ -9,7 +9,7 @@ ingress:
     - subnet-09a76ba376529ea9d
 image:
   repository: mrefaat07/datavisyn-backend
-  tag: v.07
+  tag: v.08
   pullPolicy: IfNotPresent
 service:
   name: backend-svc
