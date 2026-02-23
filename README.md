@@ -12,7 +12,7 @@ For this submission of the DevOps CES challenge, the used tech stack is as follo
 
 # Architecture Diagram
 This is a high-level architecture diagram, showing the components and services used, as well as user and admin/dev team traffic flows.
-![Architecture Diagram](/Images/datavisyn-architecture-diagram.drawio.png)
+![Architecture Diagram](/Images/datavisyn-architecture-diagram.jpg)
 
 Next is a walkthrough of the components used in this solution.
 # Architecture walkthrough
@@ -20,17 +20,16 @@ Next is a walkthrough of the components used in this solution.
 
 ### Kubernetes & Compute
 - The EKS Cluster Node pool consists of an autoscaling group of two nodes at base, with the possibility of scaling up to three nodes, or down to one.
-- The Cluter consists of two namespaces:
+- The Cluster consists of two namespaces:
   - The `default` namespace for the application deployments.
   - The `argocd` namespace for ArgoCD resources.
-- Helm charts are used throughout the cluster for easier package management for the application and ArgoCD.
 - ArgoCD is installed in the cluster via a Helm chart deployed through Terraform.
 - The application manifest is then also applied through Terraform, which instructs ArgoCD to deploy the application and its required services using a Helm chart of its own, found in the repository.
 - The ArgoCD Helm chart has added properties for Dex Authentication with Google as well as the domain name for the ArgoCD server. The `values.yaml` file in the `terraform/modules/helm` directory contains the configuration as well as detailed documentation for further customization.
 
 ### Networking
 - The VPC consists of a public and a private subnet. The public subnet contains the NAT gateway and the Internet gateway, while the private subnet contains the compute resources, which are the EKS worker nodes in our case.
-- Route tables are defined for the private subnet to allow outbount internet traffic through the NAT gateway, allowing our applications to communicate with the required services such as GitHub for pulling application images.
+- Route tables are defined for the private subnet to allow outbound internet traffic through the NAT gateway for our applications to communicate with services such as GitHub for pulling application images.
 - Two Application Load Balancers are defined for controlled ingress to the applications:
   - One ALB for the backend application, with OIDC authentication functionality.
   - One ALB for the ArgoCD server, with no authentication functionality as that is handled by the ArgoCD server.
@@ -39,7 +38,7 @@ Next is a walkthrough of the components used in this solution.
 
 ### Automation: Terraform
 The entire infrastructure is provisioned and managed with Terraform.
-Under the Terraform directory, the following resources are provisioned:
+Under the `terraform` directory, the following resources are provisioned:
 - **The `vpc` module:**
   - The VPC
   - A public and private subnet
@@ -60,7 +59,7 @@ Under the Terraform directory, the following resources are provisioned:
 - **The `helm_charts` module:**
   - A helm chart for ArgoCD
   - A Kubernetes manifest for the backend application, deployed through ArgoCD
-  - An Application Load Balancer for ingress to the ArgoCD server
+  - An Application Load Balancer with a listener for ingress to the ArgoCD server
 
 Explicit dependencies are defined where necessary to ensure smooth end to end runs of `terraform apply`
 
@@ -71,21 +70,20 @@ Secrets and SSL certificates are never stored in code. Instead, they are retriev
 ### Authentication flow
 - **Application**
   - A user visits the domain https://example.com
-  - The Application Load Balancer intercepts the request
+  - The Application Load Balancer intercepts the request.
   - If the user is unauthenticated, they are redirected to Google to authenticate.
   ![User Login to Google, prompted by ALB OIDC](/Images/user-auth-app.jpg)
-  - After the user signs in to Google, if this is the first time the users authenticates to the application, they are prompted to accept the data that the application receives about them, in this case the profile and email.
+  - After the user signs in to Google, if this is the first time the users authenticates to the application, they are prompted to approve the data that the application receives about them, in this case the profile and email.
   - The user is then sent back to the application as an authenticated user, where they will be greeted with the application's homepage.
-  - If the user is authenticated, the request goes through to the application. The user goes directly the application homepage.
+  - If the user is authenticated from previous visits (i.e a cookie already exists), the request goes through to the application. The user goes directly the application homepage.
   ![Successful login, the user is redirected back to the app](/Images/user-auth-success.jpg)
  
 - **ArgoCD Server**
-  - A user visits the ArgoCd domain https://argocd.example.com
-  - The Application Load Balancer routes the request to the ArgoCD server, where the user sees a login screen.
-  - The user has the option to sign in with Google.
+  - A user visits the ArgoCD domain https://argocd.example.com
+  - The Application Load Balancer routes the request to the ArgoCD server, where the user sees a login screen and has the option to sign in with Google.
   ![ArgoCD login page with Sign in with Google option](/Images/argo-oidc-login.jpg)
-  -  After the user signs in to Google, if this is the first time the users authenticates to the application, they are prompted to accept the data that the application receives about them, in this case the profile and email.
-  - The user then is logged into ArgoCD server, and can see applications and perform actions according to the roles provided to them in the ArgoCD configmap, defined within the `values.yaml` file.
+  -  After the user signs in to Google, if this is the first time the users authenticates to the application, they are prompted to approve the data that the application receives about them, in this case the profile and email.
+  - The user is then logged into ArgoCD server, and can see applications and perform actions according to the roles provided to them in the ArgoCD configmap, defined within the `values.yaml` file.
   ![ArgoCD homepage after successful login](/Images/argo-oidc-login-success.jpg)
   
   >**Note:** The default role for the ArgoCD server is `readonly`. However, if the user is granted an admin role, they can see all the deployed applications as well as make changes.
@@ -117,7 +115,7 @@ To start off, we begin by creating our Oauth app from the Google Cloud Console u
 - Give your application a name and fill out the information as follows:
 - **Authorized Javascrip origins**: Enter the domain name you wish for your application to be accessible on.
 
-Make sure that the Authorized Javascript Origins match the domains we wish to access our applications on, and the authorized Redirect URIs match the following format:
+Make sure that the Authorized Javascript Origins match the domains we wish to access our applications on, and the authorized Redirect URIs match the following formats:
 
 - **Application**: https://your.example.com/oauth2/idpresponse 
   *The format recognized by the Application Load Balancer OIDC authentication.*
@@ -134,9 +132,9 @@ Using Google as an Oauth provider allows for multiple origin domains and multipl
 ### Setting up the environment
 
 ### Setting up AWS CLI
-Authenticating with AWS CLI will allow Terraform and other tools to perform operations on the AWS account we are signed in. To authenticate with AWS CLI, first you will need an access key ID and a secret access key, which you can create for your account and obtain from the AWS console.
+Authenticating with AWS CLI will allow Terraform and other tools to perform operations on the AWS account we are signed in to. To authenticate with AWS CLI, first you will need an access key ID and a secret access key, which you can create for your account and obtain from the AWS console.
 Make sure that you have the correct IAM permissions that will allow you to perform the required actions. Once you have the access key ID and the secret access key, the easiest way to authenticate is to insert them in your AWS credentials file as follows:
-- Create the file `~/.aws/credentials` and open it using uour preferred text editor.
+- Create the file `~/.aws/credentials` and open it using your preferred text editor.
 - Add the information as follows:
 ```
 [default]
@@ -144,7 +142,7 @@ aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
 region = eu-central-1
 ```
->**Note:** The default region for this project is `eu-central-1` (Frankfurt), but it can be overriden by Terraform's `.tfvars` file. more on that below.
+>**Note:** The default region for this project is `eu-central-1` (Frankfurt), but it can be overriden by Terraform's `.tfvars` file. More on that below.
 
 ### Set secrets in AWS Secrets Manager
 Once you are authenticated to AWS CLI, it is time to start adding secrets and other sensitive data that will be used in the implementation.
@@ -197,13 +195,15 @@ To provision the infrastructure, first clone the repository:
 ```bash
 git clone https://github.com/Refaat07/devops-ces-challenge
 ```
-Then go to the `terraform/` directory and initialize the Terraform environment.
+Then open the file `backend.tf` and change the `bucket` value to the name of the bucket you created in the previous command.
+
+Go to the `terraform/` directory and initialize the Terraform environment.
 
 ```bash
 terraform init
 ```
 
-take note of the files in the root module. If you do not want to use default values for your infrastructure (e.g to override domain names with your own), take note of the `variables.tf` file, and construct your `terraform.tfvars` file with key-value pairs matching the entries in `variables.tf`. Once ready, run:
+Take note of the files in the root module. If you do not want to use default values for your infrastructure (e.g to override domain names with your own), find the required variables in the `variables.tf` file, and construct your `terraform.tfvars` file with key-value pairs matching the entries in `variables.tf`. Once ready, run:
 ```bash
 terraform apply
 ```
@@ -230,7 +230,7 @@ Find the Load Balancers with the corresponding names to the ones created through
 
 ![ALB CNAME DNS entry](/Images/alb-dns-entry.jpg)
 
-Wait for some time (might take up to a few hours) for DNS propagation to complete. After that your users can access your application on the specified domain, and your team can access your ArgoCD server at its specified domain.
+Wait for some time for DNS propagation to complete (this might take up to a few hours) . After that your users can access your application on the specified domain, and your team can access your ArgoCD server at its specified domain.
 
 ## Rotate Oauth secrets
 It is recommended to set up a fixed rotation period for your secrets, or at least a reminder to rotate them. 
@@ -247,5 +247,6 @@ aws secretsmanager put-secret-value \
 
 # PoC
 The application is currently accessible for the duration of the hiring process.
-application: https://dvtask.mrefaat.me
-ArgoCD server: https://argocd.mrefaat.me
+
+- application: https://dvtask.mrefaat.me
+- ArgoCD server: https://argocd.mrefaat.me
