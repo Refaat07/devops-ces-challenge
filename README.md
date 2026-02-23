@@ -44,6 +44,7 @@ Under the Terraform directory, the following resources are provisioned:
   - The VPC
   - A public and private subnet
   - A NAT Gateway
+  - A Public IP address for the NAT gateway
   - An Internet Gateway
   - Security Groups for worker nodes
   - Route tables & associations

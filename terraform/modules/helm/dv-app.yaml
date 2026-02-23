@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/Refaat07/devops-ces-challenge' # URL of the Git repository
     targetRevision: HEAD # The branch, tag, or commit to sync from (e.g., 'HEAD' or 'main')
-    path: "helm/backend" # The path within the repository to the K8s manifests
+    path: "helm/dv-app" # The path within the repository to the K8s manifests
   destination:
     server: https://kubernetes.default.svc # The Kubernetes cluster API server URL
     namespace: default # The target namespace to deploy the manifests to
